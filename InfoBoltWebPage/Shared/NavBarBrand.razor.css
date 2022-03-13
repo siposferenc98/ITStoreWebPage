@@ -1,0 +1,15 @@
+﻿.top-row {
+    display: none;
+    padding: 5px;
+}
+
+@media(min-width:687px) {
+    .top-row {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+        background-color: rgba(0,0,0,0.4);
+        height: 3.5rem;
+    }
+}

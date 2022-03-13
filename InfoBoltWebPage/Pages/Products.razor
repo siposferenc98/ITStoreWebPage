@@ -1,0 +1,14 @@
+﻿@page "/Products"
+
+<h1 class="display-5 text-center">Products</h1>
+
+<ItemsList>
+    @foreach(var p in products)
+    {
+        <Product Text=@p></Product>
+    }
+</ItemsList>
+
+@code {
+    List<string> products = new() { "TestCPU", "TestGPU", "TestMotherboard", "TestRAM", "TestPSU"};
+}

@@ -1,0 +1,35 @@
+﻿@page "/Login"
+@inject LoginVM _loginVM
+@inject NavigationManager _navigationManager
+
+<h1>Login page :)</h1>
+<EditForm Model=@_loginVM.User OnSubmit=@LoginUser>
+    <div class = "@showErrorClass alert alert-danger">
+        <p>We couldn't log you in with the given details.</p>
+    </div>
+    <div class="col-6">
+        <input type = "text" @bind="_loginVM.User.Email" class="form-control" placeholder="email"/>
+    </div>
+    <div class="col-6">
+        <input type = "password" @bind="_loginVM.User.Pw" class="form-control" placeholder="password"/>
+    </div>
+    <div class="col-6">
+        <button type="submit" class="btn btn-primary">Send</button>
+    </div>
+</EditForm>
+
+@code {
+    bool showError = false;
+    string showErrorClass => showError ?  "" : "collapse";
+
+    public async Task LoginUser()
+    {
+        var result = await _loginVM.LoginUser();
+        var content = await result.Content.ReadAsStringAsync(); 
+        if (content.Length > 2)
+            _navigationManager.NavigateTo("/", true);
+        else
+            showError = true;
+    }
+
+}

@@ -1,0 +1,29 @@
+﻿@inject HttpClientWrapper _http;
+@inject NavigationManager _navigationManager;
+
+
+<div class = "top-row navbar navbar-dark">
+    <AuthorizeView>
+        <Authorized>
+            <div class="navItems">
+                <h3>Hello @context.User.Identity.Name!</h3>
+                <Cart/>
+                <button class="btn btn-danger" @onclick=@LogoutUser>Logout</button>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <a href="/Login" class="btn">Login</a>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+@code {
+
+    public async Task LogoutUser()
+    {
+        await _http.Send(HttpMethod.Get,"/api/Users/Logout");
+        _navigationManager.NavigateTo("/", true);
+    }
+
+
+}

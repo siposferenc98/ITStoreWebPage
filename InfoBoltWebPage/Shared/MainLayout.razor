@@ -1,0 +1,24 @@
+﻿@inherits LayoutComponentBase
+
+
+@inject NavigationManager _navigationManager;
+
+<div class="page">
+    <div>
+        <NavMenu collapseNavMenu = "@collapseNavMenu"/>
+    </div>
+
+    <main>
+        <NavBarBrand @bind-collapseNavMenu=@collapseNavMenu></NavBarBrand>
+        <NavBarLogin></NavBarLogin>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code
+{
+    private bool collapseNavMenu { get; set; }
+
+}

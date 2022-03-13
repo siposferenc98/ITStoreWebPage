@@ -1,0 +1,23 @@
+﻿<div class = "top-row navbar navbar-dark">
+    <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div>
+        <a href="/" class="navbar-brand">IT Store</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public bool collapseNavMenu { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<bool> collapseNavMenuChanged { get; set; }
+
+    private async void ToggleNavMenu()
+    { 
+        collapseNavMenu = !collapseNavMenu;
+        await collapseNavMenuChanged.InvokeAsync(collapseNavMenu);
+    }
+
+}

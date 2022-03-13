@@ -1,0 +1,65 @@
+﻿@page "/Profile"
+@inject ProfileVM _profileVM
+@inject NavigationManager _navigationManager
+
+<AuthorizeView>
+    <Authorized>
+        <h3>Profile</h3>
+        <div>
+            <h2 class="@collapsed alert alert-info">@content</h2>
+        </div>
+        <div>
+            <h2 class="col-6">Id</h2>
+            <input @bind = "@_profileVM.User.Id" placeholder="id" class="form-control"></input>
+        </div>
+        <div>
+            <h2 class="col-6">Email</h2>
+            <input @bind = "@_profileVM.User.Email" placeholder="email" class="form-control"></input>
+        </div>
+        <div>
+            <h2 class="col-6">Password</h2>
+            <input type="password" @bind = "@_profileVM.User.Pw" placeholder="email" class="form-control"></input>
+        </div>
+        <div>
+            <h2 class="col-6">Role</h2>
+            <input @bind = "@_profileVM.User.Role" placeholder="role" class="form-control"></input>
+        </div>
+        <div class="pt-2">
+            <button class="btn btn-primary" @onclick = "@UpdateProfile">Update Profile</button>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
+    public string collapsed = "collapse";
+    public string content = "Profile updated successfully!";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userID = await GetUserFromAuthState.GetIdFromAuthUser(authenticationState);
+
+        if(userID is not -1)
+        {
+            _profileVM.User.Id = userID;
+            await _profileVM.GetProfile();
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/");
+        }
+    }
+
+    public async Task UpdateProfile()
+    {
+        var result = await _profileVM.UpdateProfile();
+        collapsed = "";
+        if(!result.IsSuccessStatusCode)
+        {
+            content = "Error updating profile!";
+        }
+    }
+}

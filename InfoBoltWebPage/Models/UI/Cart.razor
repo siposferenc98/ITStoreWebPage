@@ -1,0 +1,42 @@
+﻿@inject ILocalStorageService localStorage;
+
+<a href = "/Cart">
+    <span class="oi oi-spreadsheet" style="font-size:30px">
+        <label id = "CartCounter">@cartCounter</label>
+    </span>
+</a>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
+    private int cartCounter{ get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        localStorage.Changed += UpdateCartCounter;
+        UpdateCartCounter(this,new ChangedEventArgs());
+    }
+
+    private async void UpdateCartCounter(object? sender, ChangedEventArgs e)
+    {
+        var loggedEmail = await GetUserFromAuthState.GetEmailFromAuthUser(authenticationState);
+
+        if(loggedEmail is not "")
+        {
+            if(await localStorage.ContainKeyAsync(loggedEmail))
+            {
+                var cart = await localStorage.GetItemAsync<List<string>>(loggedEmail);
+                cartCounter = cart.Count();
+                StateHasChanged();
+            }
+            else
+            {
+                cartCounter = 0;
+                StateHasChanged();
+            }
+        }
+    }
+
+}
