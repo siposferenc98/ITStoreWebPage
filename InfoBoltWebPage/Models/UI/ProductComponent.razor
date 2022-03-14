@@ -1,17 +1,25 @@
 ﻿@inject ILocalStorageService localStorage
 
-<div class="card col-2" style="width:200px">
-    <img class = "card-img-top"/>
+<div class="card col-2 m-2 text-white" style="width:200px; background-color:rgba(255,255,255,0.1);">
+    <img class = "card-img-top" src="@ImgURL"/>
     <div class="card-body">
-        <h5>@Text</h5>
-        <p>Random leiras</p>
-        <button class="btn btn-primary" @onclick="AddItem">Add</button>
+        <h5>@Name</h5>
+        <p>@Desc</p>
+        <p>@Price Ft.</p>
+        <button class="btn btn-danger" @onclick="AddItem">Add</button>
     </div>
 </div>
 
 @code {
     [Parameter]
-    public string Text { get; set; }
+    public string Name { get; set; }
+    [Parameter]
+    public string Desc { get; set; }
+    [Parameter]
+    public int Price { get; set; }
+    [Parameter]
+    public string ImgURL { get; set; }
+
     [CascadingParameter]
     public Task<AuthenticationState> authenticationState { get; set; }
 
@@ -24,12 +32,12 @@
             if(await localStorage.ContainKeyAsync(userEmail))
             {
                 var cart = await localStorage.GetItemAsync<List<string>>(userEmail);
-                cart.Add(Text);
+                cart.Add(Name);
                 await localStorage.SetItemAsync(userEmail,cart);
             }
             else
             {
-                await localStorage.SetItemAsync(userEmail,new List<string>() {Text});
+                await localStorage.SetItemAsync(userEmail,new List<string>() {Name});
             }
         }
         

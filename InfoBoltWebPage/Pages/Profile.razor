@@ -4,28 +4,48 @@
 
 <AuthorizeView>
     <Authorized>
-        <h3>Profile</h3>
-        <div>
-            <h2 class="@collapsed alert alert-info">@content</h2>
-        </div>
-        <div>
-            <h2 class="col-6">Id</h2>
-            <input @bind = "@_profileVM.User.Id" placeholder="id" class="form-control"></input>
-        </div>
-        <div>
-            <h2 class="col-6">Email</h2>
-            <input @bind = "@_profileVM.User.Email" placeholder="email" class="form-control"></input>
-        </div>
-        <div>
-            <h2 class="col-6">Password</h2>
-            <input type="password" @bind = "@_profileVM.User.Pw" placeholder="email" class="form-control"></input>
-        </div>
-        <div>
-            <h2 class="col-6">Role</h2>
-            <input @bind = "@_profileVM.User.Role" placeholder="role" class="form-control"></input>
-        </div>
-        <div class="pt-2">
-            <button class="btn btn-primary" @onclick = "@UpdateProfile">Update Profile</button>
+        <div class="container text-white">
+        <h3 style="text-align:center;">Profile</h3>
+            <div>
+                <h2 class="col-6">Email</h2>
+                <input @bind = "@_profileVM.User.Email" placeholder="email" class="form-control"></input>
+            </div>
+            <div>
+                <h2 class="col-6">Password</h2>
+                <button class="btn btn-warning" @onclick="()=>{showChangePassword = !showChangePassword;}">Change password</button>
+            </div>
+            @if(showChangePassword)
+            {
+                <div>
+                    @if(!collapsedError)
+                    {
+                        <div class = "alert alert-danger">
+                            <p>@ErrorMessage</p>
+                        </div>
+                    }
+                    <div>
+                        <h2 class="col-6">Current Password</h2>
+                        <input type="password" @bind=@currentPassword placeholder="current password" class="form-control">
+                    </div>
+                    <div>
+                        <h2 class="col-6">New Password</h2>
+                        <input type="password" @bind=@newPassword placeholder="new password" class="form-control">
+                    </div>
+                    <div>
+                        <h2 class="col-6">New Password again</h2>
+                        <input type="password" @bind=@newPasswordAgain placeholder="new password again" class="form-control">
+                    </div>
+                    <button class="btn btn-danger" @onclick=@ChangePassword>Change password</button>
+                </div>
+            }
+
+            <div>
+                <h2 class="col-6">Role</h2>
+                <input @bind = "@_profileVM.User.Role" placeholder="role" class="form-control"></input>
+            </div>
+            <div class="pt-2">
+                <button class="btn btn-primary" @onclick = "@UpdateProfile">Update Profile</button>
+            </div>
         </div>
     </Authorized>
 </AuthorizeView>
@@ -34,8 +54,13 @@
     [CascadingParameter]
     public Task<AuthenticationState> authenticationState { get; set; }
 
-    public string collapsed = "collapse";
+    private string currentPassword;
+    private string newPassword;
+    private string newPasswordAgain;
+    private bool collapsedError = true;
+    public bool showChangePassword = false;
     public string content = "Profile updated successfully!";
+    private string ErrorMessage = "";
 
 
     protected override async Task OnInitializedAsync()
@@ -53,10 +78,21 @@
         }
     }
 
+    public async Task ChangePassword()
+    {
+        bool isCurrentPasswordMatching = await _profileVM.CheckCurrentPassword(currentPassword);
+        if (!isCurrentPasswordMatching)
+        {
+            ErrorMessage = "Current password is not matching.";
+            collapsedError = false;
+            return;
+        }
+
+    }
+
     public async Task UpdateProfile()
     {
         var result = await _profileVM.UpdateProfile();
-        collapsed = "";
         if(!result.IsSuccessStatusCode)
         {
             content = "Error updating profile!";

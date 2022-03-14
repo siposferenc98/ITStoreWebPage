@@ -1,14 +1,26 @@
 ﻿@page "/Products"
 
-<h1 class="display-5 text-center">Products</h1>
+<h1 class="display-5 text-center text-white">Products</h1>
 
 <ItemsList>
-    @foreach(var p in products)
+    @foreach(Models.DB.Product p in products)
     {
-        <Product Text=@p></Product>
+        <ProductComponent Name=@p.Name Desc=@p.Description ImgURL=@p.Imgurl Price =@p.Price></ProductComponent>
     }
 </ItemsList>
 
 @code {
-    List<string> products = new() { "TestCPU", "TestGPU", "TestMotherboard", "TestRAM", "TestPSU"};
+    List<Models.DB.Product> products = new()
+        {
+            new() { Id = 0, Name = "TestCPU", Description = "TestDESC", Price = 2000, Type = 1, Imgurl="https://bit.ly/3IdZSWK" },
+            new() { Id = 0, Name = "TestGPU", Description = "TestDESC", Price = 2000, Type = 2 ,Imgurl="https://bit.ly/3IdZSWK"},
+            new() { Id = 0, Name = "TestMOBO", Description = "TestDESC", Price = 2000, Type = 3 ,Imgurl="https://bit.ly/3IdZSWK"},
+            new() { Id = 0, Name = "TestRAM", Description = "TestDESC", Price = 2000, Type = 4 ,Imgurl="https://bit.ly/3IdZSWK"},
+            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
+            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
+            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
+            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
+            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
+            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
+        };
 }

@@ -28,6 +28,16 @@ public class ProfileVM
         return await _http.SendWithContent(HttpMethod.Put, $"/api/Users/Profile/{User.Id}",User);
     }
 
+    public async Task<bool> CheckCurrentPassword(string pw)
+    {
+        if(User.Email is not "")
+        {
+            var result = await _http.SendWithContent(HttpMethod.Post, $"api/Users/CheckPassword/{User.Email}", pw);
+            return bool.Parse(await result.Content.ReadAsStringAsync());
+        }
+        return false;
+    }
+
 
     private void SetValues(User u)
     {

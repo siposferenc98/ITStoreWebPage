@@ -29,7 +29,7 @@ nav
     opacity:0;
     padding:2rem;
     transition:0.1s all ease-in-out;
-    transition-delay:50ms;
+    transition-delay:100ms;
 }
 
 .navOpacityClass
@@ -49,8 +49,8 @@ nav
     .nav-item ::deep a
     {
         text-align:center;
-        border-bottom: 1px solid white;
-        color:red;
+        border-bottom: 1px solid red;
+        color:white;
     }
 
 @media(max-width:687px)

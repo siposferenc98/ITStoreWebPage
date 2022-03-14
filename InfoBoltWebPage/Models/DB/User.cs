@@ -1,4 +1,4 @@
-﻿namespace InfoBoltWebPage.Models;
+﻿namespace InfoBoltWebPage.Models.DB;
 
 public class User
 {

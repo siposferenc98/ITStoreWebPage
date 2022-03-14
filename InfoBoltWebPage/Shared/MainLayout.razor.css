@@ -6,7 +6,7 @@
     position:relative;
     display:flex;
     flex-direction:column;
-    background-color:aliceblue;
+    background-color:rgb(0, 0, 0, 0.7);
 }
 
 main

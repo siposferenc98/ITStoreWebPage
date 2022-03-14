@@ -6,7 +6,9 @@
     <AuthorizeView>
         <Authorized>
             <div class="navItems">
-                <h3>Hello @context.User.Identity.Name!</h3>
+                <a href="/Profile" class="text-decoration-none text-white-50">
+                    <h3>Hello @context.User.Identity.Name!</h3>
+                </a>
                 <Cart/>
                 <button class="btn btn-danger" @onclick=@LogoutUser>Logout</button>
             </div>
