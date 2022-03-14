@@ -1,0 +1,60 @@
+﻿@inject ILocalStorageService localStorage
+
+
+<div class="modal fade text-black" id="Product-@Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">@Name</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @Description
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<tr>
+    <td><img src="@Imgurl" style="width:150px;"/></td>
+    <td>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Product-@Id">
+            @Name
+        </button>
+    </td>
+    <td>@Count</td>
+    <td><button class="btn btn-danger" @onclick=DeleteItem>Delete 1</button></td>
+</tr>
+
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    [Parameter]
+    public int Id{ get; set; }
+    [Parameter]
+    public string Imgurl{ get; set; }
+    [Parameter]
+    public string Name{ get; set; }
+    [Parameter]
+    public int Count{ get; set; }
+    [Parameter]
+    public string Description{ get; set; }
+
+    public async Task DeleteItem()
+    {
+        var userEmail = await GetUserFromAuthState.GetEmailFromAuthUser(authenticationState);
+        if(userEmail is not "")
+        {
+            if(await localStorage.ContainKeyAsync(userEmail))
+            {
+                var cart = await localStorage.GetItemAsync<List<string>>(userEmail);
+                cart.Remove(Id.ToString());
+                await localStorage.SetItemAsync(userEmail,cart);
+            }
+        }   
+    }
+}

@@ -1,7 +1,7 @@
 ﻿@inject ILocalStorageService localStorage
 
 <div class="card col-2 m-2 text-white" style="width:200px; background-color:rgba(255,255,255,0.1);">
-    <img class = "card-img-top" src="@ImgURL"/>
+    <img class = "card-img-top" style="height:150px;" src="@ImgURL"/>
     <div class="card-body">
         <h5>@Name</h5>
         <p>@Desc</p>
@@ -11,6 +11,8 @@
 </div>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
     [Parameter]
     public string Name { get; set; }
     [Parameter]
@@ -32,15 +34,14 @@
             if(await localStorage.ContainKeyAsync(userEmail))
             {
                 var cart = await localStorage.GetItemAsync<List<string>>(userEmail);
-                cart.Add(Name);
+                cart.Add(Id.ToString());
                 await localStorage.SetItemAsync(userEmail,cart);
             }
             else
             {
-                await localStorage.SetItemAsync(userEmail,new List<string>() {Name});
+                await localStorage.SetItemAsync(userEmail,new List<string>() {Id.ToString()});
             }
-        }
-        
+        }   
     }
 
 }

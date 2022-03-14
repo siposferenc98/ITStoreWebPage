@@ -1,7 +1,79 @@
-﻿@page "/Cart"
-<h3>Cart</h3>
+﻿@inject ILocalStorageService localStorage
+@inject HttpClientWrapper _http;
+@page "/Cart"
+
+
+
+<div class="container text-white">
+    <div class="container text-center">
+        <h3 class="display-5">Cart</h3>
+        @if(ProductsInCart.Count > 0)
+        {
+            <table class="table text-white">
+                <thead style="background-color:rgba(0,0,0,0.75);border-radius:5px;">
+                    <tr>
+                        <th style="border-radius:5px 0px 0px 0px;">Picture</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th style="border-radius:0px 5px 0px 0px;">Delete</th>
+                    </tr>
+                </thead>
+                <tbody style="vertical-align:middle;">
+                    @foreach(var p in ProductsInCart.GroupBy(x=>x.Id))
+                    {
+                        <ProductListComponent Id=@p.Key Name=@p.First().Name Count=@p.Count() Description=@p.First().Description Imgurl=@p.First().Imgurl></ProductListComponent>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h2 class="display-4">Your cart is empty!</h2>
+        }
+    </div>
+</div>
 
 @code {
-    
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
+    List<Product> ProductsInCart { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        localStorage.Changed += UpdateCartCounter;
+        await UpdateProductsInCart();
+    }
+
+    private async Task UpdateProductsInCart()
+    {
+        ProductsInCart = new();
+        var userEmail = await GetUserFromAuthState.GetEmailFromAuthUser(authenticationState);
+        if(userEmail is not "")
+        {
+            if(await localStorage.ContainKeyAsync(userEmail))
+            {
+                List<Task<HttpResponseMessage>> taskList = new();
+                var cart = await localStorage.GetItemAsync<List<string>>(userEmail);
+                foreach(var item in cart)
+                {
+                    taskList.Add(_http.Send(HttpMethod.Get, $"api/Products/{item}"));
+                }
+
+                foreach(var response in await Task.WhenAll(taskList))
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    Product p = JsonSerializer.Deserialize<Product>(content);
+                    ProductsInCart.Add(p);
+                }
+            }
+        }
+    }
+
+    private async void UpdateCartCounter(object? sender, ChangedEventArgs e)
+    {
+        await UpdateProductsInCart();
+        StateHasChanged();
+    }
 
 }

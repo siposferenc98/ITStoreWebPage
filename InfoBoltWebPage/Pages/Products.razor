@@ -1,26 +1,44 @@
 ﻿@page "/Products"
+@page "/Products/{Type}"
+@inject HttpClientWrapper _http;
 
 <h1 class="display-5 text-center text-white">Products</h1>
 
 <ItemsList>
-    @foreach(Models.DB.Product p in products)
+    @foreach(Models.DB.Product p in productsToRender)
     {
-        <ProductComponent Name=@p.Name Desc=@p.Description ImgURL=@p.Imgurl Price =@p.Price></ProductComponent>
+        <ProductComponent Id=@p.Id Name=@p.Name Desc=@p.Description ImgURL=@p.Imgurl Price =@p.Price></ProductComponent>
     }
 </ItemsList>
 
-@code {
-    List<Models.DB.Product> products = new()
+@code
+{
+    [Parameter]
+    public string? Type { get; set; }
+
+    List<Models.DB.Product> productsToRender { get; set; } = new();
+
+    List<Models.DB.Product> products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _http.Send(HttpMethod.Get, "/api/Products");
+        if(result.IsSuccessStatusCode)
         {
-            new() { Id = 0, Name = "TestCPU", Description = "TestDESC", Price = 2000, Type = 1, Imgurl="https://bit.ly/3IdZSWK" },
-            new() { Id = 0, Name = "TestGPU", Description = "TestDESC", Price = 2000, Type = 2 ,Imgurl="https://bit.ly/3IdZSWK"},
-            new() { Id = 0, Name = "TestMOBO", Description = "TestDESC", Price = 2000, Type = 3 ,Imgurl="https://bit.ly/3IdZSWK"},
-            new() { Id = 0, Name = "TestRAM", Description = "TestDESC", Price = 2000, Type = 4 ,Imgurl="https://bit.ly/3IdZSWK"},
-            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
-            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
-            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
-            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
-            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
-            new() { Id = 0, Name = "TestPSU", Description = "TestDESC", Price = 2000, Type = 5 ,Imgurl="https://bit.ly/3IdZSWK"},
-        };
+            products = JsonSerializer.Deserialize<List<Models.DB.Product>>(await result.Content.ReadAsStringAsync()) ?? new();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(Type is not null)
+        {
+            productsToRender = products.Where(x => x.Type == int.Parse(Type)).ToList();
+        }
+        else
+        {
+            productsToRender = products;
+        }
+    }
+
 }

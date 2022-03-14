@@ -6,19 +6,20 @@
     <div style="overflow-x:auto;" class="d-flex flex-nowrap">
         @foreach(var p in products)
             {
-                <CategoryNav navLink = "/Products" Text=@p.Key picUrl="@p.Value"></CategoryNav>
+                string navLink = $"/Products/{p.Type}";
+                <CategoryNav navLink=@navLink Text=@p.Name picUrl="@p.Imgurl"></CategoryNav>
             }
     </div>
 </div>
 
 @code
 {
-    Dictionary<string,string> products = new()
+    List<Product> products = new()
     {
-        { "CPU", "https://media.istockphoto.com/photos/microprocessor-and-cpu-technology-concept-picture-id1165403763?k=20&m=1165403763&s=612x612&w=0&h=Vh25eBdPjL3sYvsmDovXNNfr1Zx7mmk4-RjNNbIZYk8=" },
-        { "GPU", "https://cdn.mos.cms.futurecdn.net/Co6eHbLjAcTYheqWTjuvGK.jpg" },
-        {"MOBO", "https://static3.bigstockphoto.com/1/0/2/large1500/20135.jpg"},
-        {"RAM","https://images.freeimages.com/images/large-previews/9bc/ram-1515556.jpg"},
-        {"PSU","https://image.shutterstock.com/image-illustration/computer-ac-power-supply-unit-260nw-1983455408.jpg"}
+        new() { Id = 0, Name = "CPU", Type = 1, Imgurl = "https://media.istockphoto.com/photos/microprocessor-and-cpu-technology-concept-picture-id1165403763?k=20&m=1165403763&s=612x612&w=0&h=Vh25eBdPjL3sYvsmDovXNNfr1Zx7mmk4-RjNNbIZYk8=" },
+        new() { Id = 0, Name = "GPU", Type = 2, Imgurl = "https://cdn.mos.cms.futurecdn.net/Co6eHbLjAcTYheqWTjuvGK.jpg" },
+        new() { Id = 0, Name = "MOBO", Type = 3, Imgurl = "https://static3.bigstockphoto.com/1/0/2/large1500/20135.jpg" },
+        new() { Id = 0, Name = "RAM", Type = 4, Imgurl = "https://images.freeimages.com/images/large-previews/9bc/ram-1515556.jpg" },
+        new() { Id = 0, Name = "PSU", Type = 5, Imgurl = "https://image.shutterstock.com/image-illustration/computer-ac-power-supply-unit-260nw-1983455408.jpg" }
     };
 }
