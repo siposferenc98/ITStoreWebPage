@@ -1,7 +1,10 @@
 ﻿#CartCounter {
-    font-size: 12px;
+    font-size: 14px;
     background: #ff0000;
     color: #fff;
-    padding: 0 5px;
+    padding: 2px 5px;
     vertical-align: top;
+    border-radius:5px;
+    font-weight:bold;
+    text-shadow:1px 1px black;
 }

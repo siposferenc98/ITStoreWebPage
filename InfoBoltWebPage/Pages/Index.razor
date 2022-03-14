@@ -2,16 +2,23 @@
 
 
 <PageTitle>Index</PageTitle>
-<div class="container">
-    <div class="row">
+<div class="container justify-content-center d-flex flex-column">
+    <div style="overflow-x:auto;" class="d-flex flex-nowrap">
         @foreach(var p in products)
             {
-                <CategoryNav navLink = "/Products" Text=@p picUrl="https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"></CategoryNav>
+                <CategoryNav navLink = "/Products" Text=@p.Key picUrl="@p.Value"></CategoryNav>
             }
     </div>
 </div>
 
 @code
 {
-    List<string> products = new() { "CPU", "GPU", "Motherboard", "RAM", "PSU"};
+    Dictionary<string,string> products = new()
+    {
+        { "CPU", "https://media.istockphoto.com/photos/microprocessor-and-cpu-technology-concept-picture-id1165403763?k=20&m=1165403763&s=612x612&w=0&h=Vh25eBdPjL3sYvsmDovXNNfr1Zx7mmk4-RjNNbIZYk8=" },
+        { "GPU", "https://cdn.mos.cms.futurecdn.net/Co6eHbLjAcTYheqWTjuvGK.jpg" },
+        {"MOBO", "https://static3.bigstockphoto.com/1/0/2/large1500/20135.jpg"},
+        {"RAM","https://images.freeimages.com/images/large-previews/9bc/ram-1515556.jpg"},
+        {"PSU","https://image.shutterstock.com/image-illustration/computer-ac-power-supply-unit-260nw-1983455408.jpg"}
+    };
 }

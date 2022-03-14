@@ -2,7 +2,7 @@
 @inject NavigationManager _navigationManager;
 
 
-<div class = "top-row navbar navbar-dark">
+<div class = "top-row navbar navbar-dark justify-content-end text-white-50">
     <AuthorizeView>
         <Authorized>
             <div class="navItems">
@@ -12,7 +12,7 @@
             </div>
         </Authorized>
         <NotAuthorized>
-            <a href="/Login" class="btn">Login</a>
+            <a href="/Login" class="btn btn-light me-5">Login</a>
         </NotAuthorized>
     </AuthorizeView>
 </div>
