@@ -6,7 +6,11 @@
         <h5>@Name</h5>
         <p>@Desc</p>
         <p>@Price Ft.</p>
-        <button class="btn btn-danger" @onclick="AddItem">Add</button>
+        <AuthorizeView>
+            <Authorized>
+                <button class="btn btn-danger" @onclick="AddItem">Add</button>
+            </Authorized>
+        </AuthorizeView>
     </div>
 </div>
 

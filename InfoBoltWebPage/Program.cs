@@ -5,7 +5,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddTransient(sp => new HttpClientWrapper());
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<AuthenticationStateProvider , CustomAuthenticationStateProvider>();
-builder.Services.AddScoped<LoginVM>();
 builder.Services.AddScoped<ProfileVM>();
 
 builder.Services.AddOptions();

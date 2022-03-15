@@ -9,22 +9,33 @@
         <h3 class="display-5">Cart</h3>
         @if(ProductsInCart.Count > 0)
         {
-            <table class="table text-white">
-                <thead style="background-color:rgba(0,0,0,0.75);border-radius:5px;">
-                    <tr>
-                        <th style="border-radius:5px 0px 0px 0px;">Picture</th>
-                        <th>Product Name</th>
-                        <th>Quantity</th>
-                        <th style="border-radius:0px 5px 0px 0px;">Delete</th>
-                    </tr>
-                </thead>
-                <tbody style="vertical-align:middle;">
-                    @foreach(var p in ProductsInCart.GroupBy(x=>x.Id))
-                    {
-                        <ProductListComponent Id=@p.Key Name=@p.First().Name Count=@p.Count() Description=@p.First().Description Imgurl=@p.First().Imgurl></ProductListComponent>
-                    }
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table text-white">
+                    <thead style="background-color:rgba(0,0,0,0.75);border-radius:5px;">
+                        <tr>
+                            <th style="border-radius:5px 0px 0px 0px;">Picture</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th style="border-radius:0px 5px 0px 0px;">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody style="vertical-align:middle;">
+                        @foreach(var p in ProductsInCart.GroupBy(x=>x.Id))
+                        {
+                            <ProductListComponent Id=@p.Key Name=@p.First().Name Count=@p.Count() Description=@p.First().Description Imgurl=@p.First().Imgurl></ProductListComponent>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class = "d-flex flex-row">
+                <div style="border:1px solid black; margin:0.5rem; border-radius:10px;" class="col-6 col-md-8">
+                    <h4>Delivery time: </h4>
+                </div>
+                <div class="col-6 col-md-4">
+                    <h4 class="display-6 text-decoration-underline">Total price: @ProductsInCart.Sum(x=>x.Price) Ft.</h4>
+                    <a class="btn btn-danger" href = "/Cart/Checkout">Place order</a>
+                </div>
+            </div>
         }
         else
         {

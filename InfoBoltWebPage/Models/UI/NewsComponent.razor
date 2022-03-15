@@ -1,0 +1,11 @@
+﻿<div class="content @Col" style="min-height:500px;background-color:rgba(0,0,0,0.3);">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public string Col{ get; set; }
+    [Parameter]
+    public RenderFragment ChildContent{ get; set; }
+
+}

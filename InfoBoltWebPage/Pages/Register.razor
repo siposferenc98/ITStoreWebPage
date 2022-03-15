@@ -1,5 +1,42 @@
-﻿<h3>Register</h3>
+﻿@page "/Register"
+@inject NavigationManager _navigationManager
+@inject HttpClientWrapper _http;
+
+<EditForm Model=@User OnSubmit=@RegisterUser>
+    <div class = "@showErrorClass alert alert-danger">
+        <p>We couldn't log you in with the given details.</p>
+    </div>
+    <div class="col-6">
+        <input type = "email" @bind="User.Email" class="form-control" placeholder="email"/>
+    </div>
+    <div class="col-6">
+        <input type = "password" @bind="User.Pw" class="form-control" placeholder="password"/>
+    </div>
+    <div class="col-6">
+        <input type = "password" @bind="passwordAgain" class="form-control" placeholder="password again"/>
+    </div>
+    <div class="col-6">
+        <button type="submit" class="btn btn-primary">Send</button>
+    </div>
+</EditForm>
 
 @code {
+    private User User = new();
+    bool showError = false;
+    private string passwordAgain = "";
+    string showErrorClass => showError ?  "" : "collapse";
 
+    private async Task RegisterUser()
+    {
+        if(User.Pw == passwordAgain)
+        {
+            var result = await _http.SendWithContent(HttpMethod.Put, "/api/Users", User);
+            var content = await result.Content.ReadAsStringAsync();
+            if(content is not "")
+            {
+                await _http.SendWithContent(HttpMethod.Post, "api/Users/Login", User);
+                _navigationManager.NavigateTo("/", true);
+            }
+        }
+    }
 }

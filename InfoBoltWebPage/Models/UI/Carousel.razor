@@ -1,0 +1,40 @@
+﻿@inject IJSRuntime JS
+
+<div id="carouselOnlySlides" class="carousel slide col-6" data-bs-interval="3000">
+  <div class="carousel-inner">
+      @foreach(string p in PictureURLs)
+        {
+            if(p == PictureURLs.First())
+            {
+                <div class="carousel-item active">    
+                  <img src=@p class="d-block w-100">
+                </div>
+            }
+            else
+            {
+                <div class="carousel-item">    
+                  <img src=@p class="d-block w-100">
+                </div>
+            }
+
+        }
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselOnlySlides" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselOnlySlides" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+@code {
+    [Parameter]
+    public List<string> PictureURLs{ get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("CarouselStart");
+    }
+}

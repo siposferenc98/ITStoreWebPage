@@ -11,9 +11,18 @@
             }
     </div>
 </div>
+<NewsComponent Col="col-12 col-md-8">
+    <Carousel PictureURLs=@CarouselUrls></Carousel>
+</NewsComponent>
 
 @code
 {
+    List<string> CarouselUrls = new()
+        {
+            "https://cdn.mos.cms.futurecdn.net/Co6eHbLjAcTYheqWTjuvGK.jpg",
+            "https://images.freeimages.com/images/large-previews/9bc/ram-1515556.jpg"
+        };
+
     List<Product> products = new()
     {
         new() { Id = 0, Name = "CPU", Type = 1, Imgurl = "https://media.istockphoto.com/photos/microprocessor-and-cpu-technology-concept-picture-id1165403763?k=20&m=1165403763&s=612x612&w=0&h=Vh25eBdPjL3sYvsmDovXNNfr1Zx7mmk4-RjNNbIZYk8=" },

@@ -28,7 +28,7 @@ public class HttpClientWrapper
         catch (HttpRequestException ex)
         {
             Console.WriteLine(ex.Message);
-            return new HttpResponseMessage();
+            return new HttpResponseMessage() { StatusCode = System.Net.HttpStatusCode.NotFound};
         }
     }
 
@@ -44,7 +44,7 @@ public class HttpClientWrapper
         catch(HttpRequestException ex)
         {
             Console.WriteLine(ex.Message);
-            return new HttpResponseMessage();
+            return new HttpResponseMessage() { StatusCode = System.Net.HttpStatusCode.NotFound };
         }
     }
 }

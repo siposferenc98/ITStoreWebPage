@@ -5,7 +5,13 @@
 <AuthorizeView>
     <Authorized>
         <div class="container text-white">
-        <h3 style="text-align:center;">Profile</h3>
+            <h3 style="text-align:center;">Profile</h3>
+            @if(!collapsedInformation)
+            {
+                <div class = "alert alert-info">
+                    <p>@informationContent</p>
+                </div>
+            }
             <div>
                 <h2 class="col-6">Email</h2>
                 <input @bind = "@_profileVM.User.Email" placeholder="email" class="form-control"></input>
@@ -58,8 +64,9 @@
     private string newPassword;
     private string newPasswordAgain;
     private bool collapsedError = true;
-    public bool showChangePassword = false;
-    public string content = "Profile updated successfully!";
+    private bool showChangePassword = false;
+    private bool collapsedInformation = true;
+    private string informationContent = "Profile updated successfully!";
     private string ErrorMessage = "";
 
 
@@ -87,6 +94,28 @@
             collapsedError = false;
             return;
         }
+        if(!(newPassword == newPasswordAgain))
+        {
+            ErrorMessage = "The new passwords don't match";
+            collapsedError = false;
+            return;
+        }
+
+        _profileVM.User.Pw = newPassword;
+        var result = await _profileVM.UpdateProfile();
+        if(!result.IsSuccessStatusCode)
+        {
+            ErrorMessage = "Error updating profile!";
+            collapsedError = false;
+            return;
+        }
+
+        showChangePassword = !showChangePassword;
+        currentPassword = string.Empty;
+        newPassword = string.Empty;
+        newPasswordAgain = string.Empty;
+        collapsedError = true;
+        collapsedInformation = false;
 
     }
 
@@ -95,7 +124,8 @@
         var result = await _profileVM.UpdateProfile();
         if(!result.IsSuccessStatusCode)
         {
-            content = "Error updating profile!";
+            informationContent = "Error updating profile!";
+            collapsedInformation = !collapsedInformation;
         }
     }
 }
