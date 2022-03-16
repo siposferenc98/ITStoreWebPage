@@ -1,0 +1,22 @@
+﻿*{
+    transition: all 120ms ease-in-out;
+}
+
+.categoryCard {
+    width: 15rem;
+    flex: 1 0 auto;
+    background-color: rgba(255,255,255,0.1);
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.categoryCard:hover
+{
+    background-color:rgba(255,255,255,0.3);
+}
+
+.categoryCardText {
+    text-align: center;
+    text-shadow: 1px 1px black;
+    font-weight: 300;
+}

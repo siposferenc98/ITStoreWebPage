@@ -1,29 +1,35 @@
 ﻿@page "/"
-
+@inject HttpClientWrapper _http;
 
 <PageTitle>IT Store</PageTitle>
 <div class="container justify-content-center d-flex flex-column">
     <div style="overflow-x:auto;" class="d-flex flex-nowrap">
-        @foreach(var p in products)
+        @foreach(var p in Categories)
             {
                 string navLink = $"/Products/{p.Type}";
                 <CategoryNav navLink=@navLink Text=@p.Name picUrl="@p.Imgurl"></CategoryNav>
             }
     </div>
 </div>
-<NewsComponent Col="col-12 col-md-8">
-    <Carousel PictureURLs=@CarouselUrls></Carousel>
-</NewsComponent>
+
+<div class="d-flex flex-column flex-lg-row justify-content-center align-items-center">
+    <NewsComponent Col="col-12 col-md-8 col-lg-4">
+        <div class="col-12">
+            <h5 class="display-5 text-white" style="text-align:center">Newest products</h5>
+            <Carousel FreshProducts=@FreshProducts></Carousel>
+        </div>
+    </NewsComponent>
+    <NewsComponent Col="col-md-8 col-12">
+
+    </NewsComponent>
+</div>
 
 @code
 {
-    List<string> CarouselUrls = new()
-        {
-            "https://cdn.mos.cms.futurecdn.net/Co6eHbLjAcTYheqWTjuvGK.jpg",
-            "https://images.freeimages.com/images/large-previews/9bc/ram-1515556.jpg"
-        };
+    /*[Parameter]
+    public int CarouselActiveId{ get; set; }*/
 
-    List<Product> products = new()
+    List<Product> Categories = new()
     {
         new() { Id = 0, Name = "CPU", Type = 1, Imgurl = "https://media.istockphoto.com/photos/microprocessor-and-cpu-technology-concept-picture-id1165403763?k=20&m=1165403763&s=612x612&w=0&h=Vh25eBdPjL3sYvsmDovXNNfr1Zx7mmk4-RjNNbIZYk8=" },
         new() { Id = 0, Name = "GPU", Type = 2, Imgurl = "https://cdn.mos.cms.futurecdn.net/Co6eHbLjAcTYheqWTjuvGK.jpg" },
@@ -31,4 +37,22 @@
         new() { Id = 0, Name = "RAM", Type = 4, Imgurl = "https://images.freeimages.com/images/large-previews/9bc/ram-1515556.jpg" },
         new() { Id = 0, Name = "PSU", Type = 5, Imgurl = "https://image.shutterstock.com/image-illustration/computer-ac-power-supply-unit-260nw-1983455408.jpg" }
     };
+
+    List<Product> FreshProducts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetFreshProducts();
+    }
+
+    private async Task GetFreshProducts()
+    {
+        var result = await _http.Send(HttpMethod.Get, "api/Products/Fresh");
+        if(result.IsSuccessStatusCode)
+        {
+            var content = await result.Content.ReadAsStringAsync();
+            FreshProducts = JsonSerializer.Deserialize<List<Product>>(content) ?? new();
+        }
+    }
+
 }

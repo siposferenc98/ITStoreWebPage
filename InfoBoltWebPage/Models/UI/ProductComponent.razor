@@ -5,7 +5,7 @@
     <div class="card-body">
         <h5>@Name</h5>
         <p>@Desc</p>
-        <p>@Price Ft.</p>
+        <p>@Price.ToString("N0") Ft.</p>
         <AuthorizeView>
             <Authorized>
                 <button class="btn btn-danger" @onclick="AddItem">Add</button>

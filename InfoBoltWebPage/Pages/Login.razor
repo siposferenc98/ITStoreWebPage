@@ -2,21 +2,25 @@
 @inject NavigationManager _navigationManager
 @inject HttpClientWrapper _http;
 
-<h1>Login page :)</h1>
-<EditForm Model=@User OnSubmit=@LoginUser>
-    <div class = "@showErrorClass alert alert-danger">
-        <p>We couldn't log you in with the given details.</p>
-    </div>
+<div class="container d-flex justify-content-center align-items-center" style="min-height:80vh">
     <div class="col-6">
-        <input type = "text" @bind="User.Email" class="form-control" placeholder="email"/>
+        <h3 class="display-4 text-white p-2" style="text-align:center;">Login</h3>
+        <EditForm Model=@User OnSubmit=@LoginUser>
+            <div class = "@showErrorClass alert alert-danger">
+                <p>We couldn't log you in with the given details.</p>
+            </div>
+            <div class="col-12">
+                <input type = "email" @bind="User.Email" class="form-control" placeholder="email"/>
+            </div>
+            <div class="col-12">
+                <input type = "password" @bind="User.Pw" class="form-control" placeholder="password"/>
+            </div>
+            <div class="col-6">
+                <button type="submit" class="btn btn-primary">Send</button>
+            </div>
+        </EditForm>
     </div>
-    <div class="col-6">
-        <input type = "password" @bind="User.Pw" class="form-control" placeholder="password"/>
-    </div>
-    <div class="col-6">
-        <button type="submit" class="btn btn-primary">Send</button>
-    </div>
-</EditForm>
+</div>
 
 @code {
     public User User = new();
