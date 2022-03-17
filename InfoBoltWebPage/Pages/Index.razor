@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject HttpClientWrapper _http;
+@inject HttpClient _httpClient;
 
 <PageTitle>IT Store</PageTitle>
 <div class="container justify-content-center d-flex flex-column">
@@ -12,17 +13,27 @@
     </div>
 </div>
 
-<div class="d-flex flex-column flex-lg-row justify-content-center align-items-center">
-    <NewsComponent Col="col-12 col-md-8 col-lg-4">
+<div class="container d-flex flex-md-row flex-column">
+    <NewsComponent Classes="col-12 col-md-4 flex-row">
         <div class="col-12">
             <h5 class="display-5 text-white" style="text-align:center">Newest products</h5>
             <Carousel FreshProducts=@FreshProducts></Carousel>
         </div>
     </NewsComponent>
-    <NewsComponent Col="col-md-8 col-12">
-
+    <NewsComponent Classes="flex-column col-12 col-md-8">
+            <h1 style="text-align:center" class="text-white display-5">News</h1>
+            <div style="overflow-x:auto;" class="d-flex flex-nowrap flex-row">
+                @if(newsResponse.articles is not null)
+                {
+                    @foreach(Article article in newsResponse.articles)
+                    {
+                        <AppleNewsComponent Article=@article></AppleNewsComponent>
+                    }
+                }
+            </div>
     </NewsComponent>
 </div>
+
 
 @code
 {
@@ -39,10 +50,12 @@
     };
 
     List<Product> FreshProducts = new();
+    AppleArticlesRoot newsResponse = new();
 
     protected override async Task OnInitializedAsync()
     {
         await GetFreshProducts();
+        await GetAppleNews();
     }
 
     private async Task GetFreshProducts()
@@ -54,5 +67,17 @@
             FreshProducts = JsonSerializer.Deserialize<List<Product>>(content) ?? new();
         }
     }
+
+    private async Task GetAppleNews()
+    {
+        var result = await _httpClient.GetAsync("https://newsapi.org/v2/everything?q=apple&from=2022-03-16&to=2022-03-16&sortBy=popularity&apiKey=30a9f57a61734e1fb53c571c3dca69ac");
+        if(result.IsSuccessStatusCode)
+        {
+            var content = await result.Content.ReadAsStringAsync();
+            newsResponse = JsonSerializer.Deserialize<AppleArticlesRoot>(content);
+
+        }
+    }
+
 
 }

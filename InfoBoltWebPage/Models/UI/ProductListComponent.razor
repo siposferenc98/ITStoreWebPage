@@ -1,15 +1,15 @@
 ﻿@inject ILocalStorageService localStorage
 
 
-<div class="modal fade text-black" id="Product-@Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade text-black" id="Product-@Product.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">@Name</h5>
+        <h5 class="modal-title" id="exampleModalLabel">@Product.Name</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        @Description
+        @Product.Description
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -19,12 +19,21 @@
 </div>
 
 <tr>
-    <td><img src="@Imgurl" style="width:150px;"/></td>
     <td>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Product-@Id">
-            @Name
+        <div style="position:relative;">
+            @if(Product.Stock == 0)
+            {
+                <h4 style="position:absolute;top:50%;right:50%;transform: translate(50%,-50%);z-index:2;">Out of stock!</h4>
+            }
+            <img src="@Product.Imgurl" style="width:10rem;@Brightness"/>
+        </div>
+    </td>
+    <td>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Product-@Product.Id">
+            @Product.Name
         </button>
     </td>
+    <td>@Product.Price.ToString("N0") Ft.</td>
     <td>@Count</td>
     <td><button class="btn btn-danger" @onclick=DeleteItem>Remove 1</button></td>
 </tr>
@@ -34,15 +43,10 @@
     [CascadingParameter]
     public Task<AuthenticationState> authenticationState { get; set; }
     [Parameter]
-    public int Id{ get; set; }
-    [Parameter]
-    public string Imgurl{ get; set; }
-    [Parameter]
-    public string Name{ get; set; }
+    public Product Product{ get; set; }
     [Parameter]
     public int Count{ get; set; }
-    [Parameter]
-    public string Description{ get; set; }
+    private string Brightness => Product.Stock == 0 ? "filter:brightness(30%)" : "";
 
     public async Task DeleteItem()
     {
@@ -52,7 +56,8 @@
             if(await localStorage.ContainKeyAsync(userEmail))
             {
                 var cart = await localStorage.GetItemAsync<List<string>>(userEmail);
-                cart.Remove(Id.ToString());
+                cart.Remove(Product.Id.ToString());
+                cart.Sort();
                 await localStorage.SetItemAsync(userEmail,cart);
             }
         }   

@@ -7,7 +7,7 @@
 <ItemsList>
     @foreach(Models.DB.Product p in productsToRender)
     {
-        <ProductComponent Id=@p.Id Name=@p.Name Desc=@p.Description ImgURL=@p.Imgurl Price =@p.Price></ProductComponent>
+        <ProductComponent Product=@p></ProductComponent>
     }
 </ItemsList>
 

@@ -1,5 +1,6 @@
 ﻿global using InfoBoltWebPage.Models;
 global using InfoBoltWebPage.Models.DB;
+global using InfoBoltWebPage.Models.AppleNews;
 global using System.Text.Json;
 global using System.Security.Claims;
 global using Microsoft.AspNetCore.Components.Authorization;

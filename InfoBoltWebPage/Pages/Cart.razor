@@ -15,6 +15,7 @@
                         <tr>
                             <th style="border-radius:5px 0px 0px 0px;">Picture</th>
                             <th>Product Name</th>
+                            <th>Price</th>
                             <th>Quantity</th>
                             <th style="border-radius:0px 5px 0px 0px;">Remove</th>
                         </tr>
@@ -22,16 +23,17 @@
                     <tbody style="vertical-align:middle;">
                         @foreach(var p in ProductsInCart.GroupBy(x=>x.Id))
                         {
-                            <ProductListComponent Id=@p.Key Name=@p.First().Name Count=@p.Count() Description=@p.First().Description Imgurl=@p.First().Imgurl></ProductListComponent>
+                            <ProductListComponent  Product=p.First() Count=@p.Count()></ProductListComponent>
                         }
                     </tbody>
                 </table>
             </div>
             <div class = "d-flex flex-row">
                 <div style="border:1px solid black; margin:0.5rem; border-radius:10px;" class="col-6 col-md-8">
-                    <h4>Delivery time: </h4>
+                    <h4>Delivery time: @DeliveryTime Days. </h4>
+                    <h4>Delivery Fee: @DeliveryFee Ft. </h4>
                 </div>
-                <div class="col-6 col-md-4">
+                <div class="col-6 col-md-4 m-2 p-2">
                     <h4 class="display-6 text-decoration-underline">Total price: @ProductsInCart.Sum(x=>x.Price).ToString("N0") Ft.</h4>
                     <a class="btn btn-danger" href = "/Cart/Checkout">Place order</a>
                 </div>
@@ -49,6 +51,9 @@
     public Task<AuthenticationState> authenticationState { get; set; }
 
     List<Product> ProductsInCart { get; set; } = new();
+
+    private int DeliveryTime => ProductsInCart.Any(x=>x.Stock == 0) ? 5 : 3;
+    private int DeliveryFee => ProductsInCart.Sum(x=>x.Price) > 100000 ? 0 : 3990;
 
     protected override async Task OnInitializedAsync()
     {

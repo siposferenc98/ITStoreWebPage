@@ -1,0 +1,11 @@
+﻿<div class="card d-flex flex-column" style="width:15rem;flex:1 0 auto;">
+    <img class="card-img-top" src=@Article.urlToImage/>
+    <div class="card-body">
+        <h5 class="text-decoration-none text-black categoryCardText">@Article.title</h5>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Article Article{ get; set; }
+}
