@@ -1,8 +1,16 @@
 ﻿@page "/"
+@page "/{success}"
 @inject HttpClientWrapper _http;
 @inject HttpClient _httpClient;
 
 <PageTitle>IT Store</PageTitle>
+@if(success is not null and "true")
+{
+    <div class="alert alert-info">
+        <h1>Successful order!</h1>
+    </div>            
+}
+
 <div class="container justify-content-center d-flex flex-column">
     <div style="overflow-x:auto;" class="d-flex flex-nowrap">
         @foreach(var p in Categories)
@@ -44,6 +52,9 @@
     /*[Parameter]
     public int CarouselActiveId{ get; set; }*/
 
+    [Parameter]
+    public string? success{ get; set; }
+
     List<Product> Categories = new()
     {
         new() { Id = 0, Name = "CPU", Type = 1, Imgurl = "https://media.istockphoto.com/photos/microprocessor-and-cpu-technology-concept-picture-id1165403763?k=20&m=1165403763&s=612x612&w=0&h=Vh25eBdPjL3sYvsmDovXNNfr1Zx7mmk4-RjNNbIZYk8=" },
@@ -74,7 +85,7 @@
 
     private async Task GetAppleNews()
     {
-        var result = await _httpClient.GetAsync("https://newsapi.org/v2/everything?q=apple&from=2022-03-16&to=2022-03-16&sortBy=popularity&apiKey=30a9f57a61734e1fb53c571c3dca69ac");
+        var result = await _httpClient.GetAsync($"https://newsapi.org/v2/everything?q=apple&from={DateTime.Now.Date}&to={DateTime.Now.Date.AddDays(-1)}&sortBy=popularity&apiKey=30a9f57a61734e1fb53c571c3dca69ac");
         if(result.IsSuccessStatusCode)
         {
             var content = await result.Content.ReadAsStringAsync();

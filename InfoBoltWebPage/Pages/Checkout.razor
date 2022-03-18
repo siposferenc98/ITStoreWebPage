@@ -1,6 +1,8 @@
 ﻿@page "/Cart/Checkout"
 @inject ProfileVM _profileVM
 @inject NavigationManager _navigationManager
+@inject ILocalStorageService localStorage
+@inject HttpClientWrapper _http;
 
 <div class="container">
     @if(_profileVM.User.City == "" || _profileVM.User.Address == "" || _profileVM.User.Phone == "")
@@ -33,6 +35,7 @@
     }
     else
     {
+        
         <div class="alert alert-info">
             <h4 class="display-6">City: @_profileVM.User.City</h4>
             <h4 class="display-6">Address: @_profileVM.User.Address</h4>
@@ -41,12 +44,12 @@
         </div>
         <div class="container">
             <NewsComponent Classes="justify-content-center">
-                <EditForm Model=this OnValidSubmit=@PlaceOrder>
+                <EditForm Model=this OnValidSubmit=@PlaceOrder style="text-align:center">
                     <InputRadioGroup @bind-Value=@SelectedPayment>
-                        @foreach(string item in values)
-                        {
-                            <PaymentMethodComponent Value=@item></PaymentMethodComponent>
-                        }
+                        <PaymentMethodComponent Value="Credit Card" Imgurl="https://media.istockphoto.com/photos/stacked-credit-cards-picture-id1203763961?k=20&m=1203763961&s=612x612&w=0&h=mrFgkoWWVdp0mtt_vw6OTEZCSjw3bUYhuJt5QWVdkXo="></PaymentMethodComponent>
+                        <PaymentMethodComponent Value="Cash" Imgurl="https://static3.depositphotos.com/1007115/233/i/950/depositphotos_2332507-stock-photo-cash.jpg"></PaymentMethodComponent>
+                        <PaymentMethodComponent Value="Paypal" Imgurl="https://logowik.com/content/uploads/images/897_paypal.jpg"></PaymentMethodComponent>
+                        <PaymentMethodComponent Value="Prepaid" Imgurl="https://media.istockphoto.com/photos/businesspeople-exchanging-visiting-card-picture-id842324660?k=20&m=842324660&s=612x612&w=0&h=xa-A0VdXN8Ly9zQTi1BnLK1hx1_itJEvyFxjLkZPZ6o="></PaymentMethodComponent>
                     </InputRadioGroup>
                     <h1 style="text-align:center;color:white;">Selected payment method: @SelectedPayment</h1>
                     <button class="btn btn-primary" type="submit">Place Order</button>
@@ -63,7 +66,8 @@
     private string Phone { get; set; }
     private string Address { get; set; }
     private string City { get; set; }
-    private string SelectedPayment{ get; set; }
+    private record PaymentOption{}
+    private string SelectedPayment { get; set; } = "Credit Card";
     private List<string> values = new() { "Credit Card", "Cash", "Paypal", "Prepaid" };
 
     protected override async Task OnInitializedAsync()
@@ -101,6 +105,35 @@
 
     public async Task PlaceOrder()
     {
-        
+        Order o = new()
+            {
+                Userid = _profileVM.User.Id,
+                Date = DateTime.Now,
+                Paymentmethod = SelectedPayment
+            };
+
+        if(await localStorage.ContainKeyAsync(_profileVM.User.Email))
+        {
+            List<Item> items = new();
+            var cart = await localStorage.GetItemAsync<List<string>>(_profileVM.User.Email);
+            var groupedCart = cart.GroupBy(x => x);
+            foreach(var item in groupedCart)
+            {
+                Item i = new()
+                {
+                    Productid = int.Parse(item.Key),
+                    Productcount = item.Count(),
+                };
+                items.Add(i);
+            }
+            o.Items = items;
+            var result = await _http.SendWithContent(HttpMethod.Post, "api/Orders", o);
+            if(result.IsSuccessStatusCode)
+            {
+                await localStorage.SetItemAsync(_profileVM.User.Email,new List<string>());
+                _navigationManager.NavigateTo("/true");
+            }
+        }
+
     }
 }
