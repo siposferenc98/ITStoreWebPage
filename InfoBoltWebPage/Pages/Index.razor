@@ -30,6 +30,10 @@
                         <AppleNewsComponent Article=@article></AppleNewsComponent>
                     }
                 }
+                else
+                {
+                    <h1 class="display-3">Loading...</h1>
+                }
             </div>
     </NewsComponent>
 </div>
@@ -49,7 +53,7 @@
         new() { Id = 0, Name = "PSU", Type = 5, Imgurl = "https://image.shutterstock.com/image-illustration/computer-ac-power-supply-unit-260nw-1983455408.jpg" }
     };
 
-    List<Product> FreshProducts = new();
+    List<Product>? FreshProducts = new();
     AppleArticlesRoot newsResponse = new();
 
     protected override async Task OnInitializedAsync()
@@ -74,7 +78,7 @@
         if(result.IsSuccessStatusCode)
         {
             var content = await result.Content.ReadAsStringAsync();
-            newsResponse = JsonSerializer.Deserialize<AppleArticlesRoot>(content);
+            newsResponse = JsonSerializer.Deserialize<AppleArticlesRoot>(content) ?? new();
 
         }
     }

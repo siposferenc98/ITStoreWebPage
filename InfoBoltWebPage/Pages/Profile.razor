@@ -46,8 +46,16 @@
             }
 
             <div>
-                <h2 class="col-6">Role</h2>
-                <input @bind = "@_profileVM.User.Role" placeholder="role" class="form-control"></input>
+                <h2 class="col-6">City</h2>
+                <input @bind = "@_profileVM.User.City" placeholder="city" class="form-control"></input>
+            </div>
+            <div>
+                <h2 class="col-6">Address</h2>
+                <input @bind = "@_profileVM.User.Address" placeholder="address" class="form-control"></input>
+            </div>
+            <div>
+                <h2 class="col-6">Phone</h2>
+                <input @bind = "@_profileVM.User.Phone" placeholder="phone" class="form-control"></input>
             </div>
             <div class="pt-2">
                 <button class="btn btn-primary" @onclick = "@UpdateProfile">Update Profile</button>
@@ -87,13 +95,7 @@
 
     public async Task ChangePassword()
     {
-        bool isCurrentPasswordMatching = await _profileVM.CheckCurrentPassword(currentPassword);
-        if (!isCurrentPasswordMatching)
-        {
-            ErrorMessage = "Current password is not matching.";
-            collapsedError = false;
-            return;
-        }
+        
         if(!(newPassword == newPasswordAgain))
         {
             ErrorMessage = "The new passwords don't match";
@@ -101,11 +103,10 @@
             return;
         }
 
-        _profileVM.User.Pw = newPassword;
-        var result = await _profileVM.UpdateProfile();
-        if(!result.IsSuccessStatusCode)
+        bool changePassword = await _profileVM.ChangePassword(new List<string>(){currentPassword,newPassword});
+        if(!changePassword)
         {
-            ErrorMessage = "Error updating profile!";
+            ErrorMessage = "Current password is not matching.";
             collapsedError = false;
             return;
         }
@@ -122,10 +123,10 @@
     public async Task UpdateProfile()
     {
         var result = await _profileVM.UpdateProfile();
-        if(!result.IsSuccessStatusCode)
+        if(!result)
         {
             informationContent = "Error updating profile!";
-            collapsedInformation = !collapsedInformation;
         }
+        collapsedInformation = false;
     }
 }

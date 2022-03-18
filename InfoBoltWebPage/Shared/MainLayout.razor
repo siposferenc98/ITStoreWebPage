@@ -1,8 +1,5 @@
 ﻿@inherits LayoutComponentBase
 
-
-@inject NavigationManager _navigationManager;
-
 <div class="page">
     <div>
         <NavMenu collapseNavMenu = "@collapseNavMenu"/>
@@ -19,6 +16,18 @@
 
 @code
 {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
     private bool collapseNavMenu { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        if(authState.User is not null)
+        {
+            //if(authState.User.Identity.IsAuthenticated)
+        }
+    }
 
 }

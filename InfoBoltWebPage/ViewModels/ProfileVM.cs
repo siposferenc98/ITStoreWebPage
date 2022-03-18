@@ -23,16 +23,23 @@ public class ProfileVM
         }
     }
 
-    public async Task<HttpResponseMessage> UpdateProfile()
+    public async Task<bool> UpdateProfile()
     {
-        return await _http.SendWithContent(HttpMethod.Put, $"/api/Users/Profile/{User.Id}",User);
+        var result = await _http.SendWithContent(HttpMethod.Put, $"/api/Users/Profile/{User.Id}", User);
+        if(result.IsSuccessStatusCode)
+        {
+            var updatedUser = JsonSerializer.Deserialize<User>(await result.Content.ReadAsStringAsync());
+            SetValues(updatedUser);
+            return true;
+        }
+        return false;
     }
 
-    public async Task<bool> CheckCurrentPassword(string pw)
+    public async Task<bool> ChangePassword(List<string> passwords)
     {
         if(User.Email is not "")
         {
-            var result = await _http.SendWithContent(HttpMethod.Post, $"api/Users/CheckPassword/{User.Email}", pw);
+            var result = await _http.SendWithContent(HttpMethod.Post, $"api/Users/ChangePassword/{User.Email}", passwords);
             return bool.Parse(await result.Content.ReadAsStringAsync());
         }
         return false;
@@ -44,6 +51,10 @@ public class ProfileVM
         User.Email = u.Email;
         User.Pw = u.Pw;
         User.Role = u.Role;
+        User.Address = u.Address;
+        User.Phone = u.Phone;
+        User.City = u.City;
+
     }
 }
 

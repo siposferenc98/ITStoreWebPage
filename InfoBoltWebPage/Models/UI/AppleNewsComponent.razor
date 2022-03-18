@@ -1,9 +1,9 @@
-﻿<div class="card d-flex flex-column" style="width:15rem;flex:1 0 auto;">
+﻿<a href=@Article.url target="_blank" class="card d-flex flex-column m-1" style="width:15rem;flex:1 0 auto; text-decoration:none">
     <img class="card-img-top" src=@Article.urlToImage/>
     <div class="card-body">
         <h5 class="text-decoration-none text-black categoryCardText">@Article.title</h5>
     </div>
-</div>
+</a>
 
 @code {
     [Parameter]

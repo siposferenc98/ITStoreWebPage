@@ -1,6 +1,106 @@
 ﻿@page "/Cart/Checkout"
-<h3>Checkout</h3>
+@inject ProfileVM _profileVM
+@inject NavigationManager _navigationManager
+
+<div class="container">
+    @if(_profileVM.User.City == "" || _profileVM.User.Address == "" || _profileVM.User.Phone == "")
+    {
+        <div class="alert alert-danger">
+            <h1>Profile is incomplete, please fill out your missing data.</h1>
+            @if(_profileVM.User.City == "")
+            {
+                <div>
+                    <h4>City</h4>
+                    <input type="text" placeholder="city" @bind=@City class="form-control"/>
+                </div>
+            }
+            @if(_profileVM.User.Address == "")
+            {
+                <div>
+                    <h4>Address</h4>
+                    <input type="text" placeholder="address" @bind=@Address class="form-control"/>
+                </div>
+            }
+            @if(_profileVM.User.Phone == "")
+            {
+                <div>
+                    <h4>Phone</h4>
+                    <input type="number" placeholder="phone" @bind=@Phone class="form-control"/>
+                </div>
+            }
+        </div>
+        <button @onclick="@UpdateProfile" class="btn btn-danger">Update profile</button>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h4 class="display-6">City: @_profileVM.User.City</h4>
+            <h4 class="display-6">Address: @_profileVM.User.Address</h4>
+            <h4 class="display-6">Phone: @_profileVM.User.Phone</h4>
+            <p class="alert alert-danger">You can change your shipping data on your profile.</p>
+        </div>
+        <div class="container">
+            <NewsComponent Classes="justify-content-center">
+                <EditForm Model=this OnValidSubmit=@PlaceOrder>
+                    <InputRadioGroup @bind-Value=@SelectedPayment>
+                        @foreach(string item in values)
+                        {
+                            <PaymentMethodComponent Value=@item></PaymentMethodComponent>
+                        }
+                    </InputRadioGroup>
+                    <h1 style="text-align:center;color:white;">Selected payment method: @SelectedPayment</h1>
+                    <button class="btn btn-primary" type="submit">Place Order</button>
+                </EditForm>
+            </NewsComponent>
+        </div>
+    }
+
+</div>
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    private string Phone { get; set; }
+    private string Address { get; set; }
+    private string City { get; set; }
+    private string SelectedPayment{ get; set; }
+    private List<string> values = new() { "Credit Card", "Cash", "Paypal", "Prepaid" };
 
+    protected override async Task OnInitializedAsync()
+    {
+        var userID = await GetUserFromAuthState.GetIdFromAuthUser(authenticationState);
+
+        if(userID is not -1)
+        {
+            _profileVM.User.Id = userID;
+            await _profileVM.GetProfile();
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/");
+        }
+    }
+
+
+    public async Task UpdateProfile()
+    {
+        if(_profileVM.User.Phone is "" or null)
+        {
+            _profileVM.User.Phone = Phone;
+        }
+        if(_profileVM.User.Address is "" or null)
+        {
+            _profileVM.User.Address = Address;
+        }
+        if(_profileVM.User.City is "" or null)
+        {
+            _profileVM.User.City = City;
+        }
+        var result = await _profileVM.UpdateProfile();
+    }
+
+    public async Task PlaceOrder()
+    {
+        
+    }
 }

@@ -79,8 +79,11 @@
                 foreach(var response in await Task.WhenAll(taskList))
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    Product p = JsonSerializer.Deserialize<Product>(content);
-                    ProductsInCart.Add(p);
+                    if(content is not "" and not null)
+                    {
+                        Product p = JsonSerializer.Deserialize<Product>(content);
+                        ProductsInCart.Add(p);
+                    }
                 }
             }
         }
